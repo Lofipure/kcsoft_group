@@ -11,6 +11,10 @@ Vue.config.productionTip = false;
 import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css'
 
+// 字体图标
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import '@mdi/font/css/materialdesignicons.css'
+
 Vue.use(Vuetify);
 
 import '@/assets/styles/main.less';
