@@ -1,0 +1,66 @@
+footer {
+  width: 100%;
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, .3);
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 5px 20px;
+
+  .kcsoft-link {
+    &:hover {
+      text-decoration: underline;
+      color: #ffffff!important;
+    }
+
+    color: #cccccc!important;
+    font-size: 14px;
+  }
+
+  .beian {
+    display: inline-block;
+
+    img {
+      vertical-align: text-bottom;
+      display: inline-block;
+      padding-left: 10px;
+    }
+
+    .beian-info {
+      &:hover {
+        color: #ffffff;
+        text-decoration: underline;
+      }
+
+      text-decoration: none;
+      margin-left: 0px;
+      color: #cccccc;
+    }
+  }
+}
+
+@media (max-width: 960px) {
+  footer {
+    .beian {
+      display: block;
+    }
+  }
+}
+
+@media (max-width: 370px) {
+  .kcsoft-link {
+    font-size: 12px!important;
+  }
+  .beian {
+    img {
+      width: 25px;
+      padding-left: 10px;
+    }
+
+    .beian-info {
+      font-size: 12px;
+    }
+  }
+}
