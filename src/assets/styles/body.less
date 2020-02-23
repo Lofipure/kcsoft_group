@@ -1,0 +1,136 @@
+.container {
+  max-width: 600px;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .form-box {
+    width: 80%;
+    height: 90%;
+    background-color: #ffffff;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 5px 20px;
+
+    .logo-header {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+
+      .logo {
+        padding: 10px;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        border-radius: 50%;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, .15);
+          cursor: pointer;
+        }
+
+        img {
+          width: 64px;
+        }
+      }
+
+      .title h3 {
+        font-size: 28px;
+        fill: #1e1b74;
+        text-align: center;
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        font-weight: 400;
+        margin: 0 0 0 15px;
+      }
+    }
+
+    .input-row {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 960px) {
+  .container {
+    -webkit-transform: translateY(-25px);
+    -moz-transform: translateY(-25px);
+    -ms-transform: translateY(-25px);
+    -o-transform: translateY(-25px);
+    transform: translateY(-25px);
+  }
+}
+
+@media (max-width: 460px) {
+  .logo-header {
+    .logo {
+      padding: 10px !important;
+
+      img {
+        width: 40px !important;
+      }
+    }
+
+    .title h3 {
+      font-size: 20px !important;
+      margin: 0 !important;
+    }
+  }
+}
+
+@media (max-width: 370px) {
+  .logo-header {
+    .logo {
+      display: none;
+    }
+
+    .title h3 {
+      font-size: 18px !important;
+      margin: 0 !important;
+    }
+
+    -webkit-transform: translateY(15px);
+    -moz-transform: translateY(15px);
+    -ms-transform: translateY(15px);
+    -o-transform: translateY(15px);
+    transform: translateY(15px);
+  }
+
+  .iphone5-div {
+    width: 100%;
+    .iphone5-v-row {
+      position: relative;
+      width: 100%;
+      -webkit-transform: translateY(-8px);
+      -moz-transform: translateY(-8px);
+      -ms-transform: translateY(-8px);
+      -o-transform: translateY(-8px);
+      transform: translateY(-8px);
+
+      .iphone5-v-col {
+        display: inline;
+
+        padding: 0;
+        margin: 0;
+
+        &:last-child {
+          position: absolute;
+          right: -70%;
+          top: 0;
+        }
+      }
+    }
+  }
+
+  .iphone5-b-div {
+    -webkit-transform: translateY(-20px);
+    -moz-transform: translateY(-20px);
+    -ms-transform: translateY(-20px);
+    -o-transform: translateY(-20px);
+    transform: translateY(-20px);
+  }
+}

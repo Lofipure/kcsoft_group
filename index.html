@@ -1,93 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>XUST-KCSOFT</title>
-    <script src="static/js/jquery.js"></script>
-    <script src="static/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/css/index.css">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
 </head>
 <body>
-<!--不知道为什么虽然只有一个表单但是我还是想做一个导航栏-->
-<nav id="navBox" class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <a href="https://www.xust-kcsoft.club" class="navbar-brand" style="margin: 0; padding: 0">
-                <!--<img src="./static/img/logo.png" alt="" class="img-responsive" width="30%">-->
-                <div class="navbar-brand">XUST-KCSOFT</div>
-            </a>
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-                <span class="sr-only">切换导航</span>
-                <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-            </button>
-        </div>
-
-        <div class="collapse navbar-collapse" id="navbar-collapse">
-            <ul class="nav navbar-nav navbar-right" style="margin-top: 0">
-                <li class="active"><a href="">2019级定向分组</a></li>
-                <li><a href="https://qoj.xust-kcsoft.club/">Online Judge入口</a></li>
-                <li><a href="https://www.xust-kcsoft.club">关于我们</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
-<br><br>
-<div class="container" id="containerOne">
-    <div id="formBox">
-        <h3>Title</h3>
-        <!--/src/register.php-->
-        <form action="" method="post" id="mainForm">
-            <div class="form-group col-sm-6" id="inputNameBox">
-                <label for="inputName" id="inputNameLabel" class="control-label"></label>
-                <input type="text" class="form-control" placeholder="姓名..." name="name" id="inputName">
-            </div>
-            <div class="form-group col-sm-6" id="inputStudentIDBox">
-                <label for="" id="inputStudentIDLabel" class="control-label"></label>
-                <input type="text" class="form-control" placeholder="学号..." name="student_id" id="inputStudentID">
-            </div>
-            <div class="form-group col-sm-12" id="inputTelephoneNumberBox">
-                <label for="" id="inputTelephoneNumberLabel" class="control-label"></label>
-                <input type="tel" class="form-control" placeholder="电话号码..." name="telephone_number" id="inputTelephoneNumber">
-            </div>
-            <div class="form-group col-sm-6" id="inputCollegeNumberBox">
-                <label for="" id="inputCollegeNumberLabel" class="control-label"></label>
-                <select name="college_number" id="college_number" class="form-control">
-                    <option value="0">__请选择学院__</option>
-                </select>
-            </div>
-            <div class="form-group col-sm-6" id="inputMajorNumberBox">
-                <label for="" class="control-label" id="inputMajorNumberLabel"></label>
-                <select name="major_number" id="major_number" class="form-control">
-                    <option value="0">__请选择专业__</option>
-                </select>
-            </div>
-            <div class="form-group col-sm-6" id="inputClassNumberBox">
-                <label for="" class="control-label" id="inputClassNumberLabel"></label>
-                <input type="text" class="form-control" placeholder="班级...(190X)" name="class_number" id="inputClassNumber">
-            </div>
-            <div class="form-group col-sm-6" id="groupSelectionBox">
-                <label for="" class="control-label" id="groupSelectionLabel"></label>
-                <select name="group_selection" id="group_selection" class="form-control" aria-describedby="helpBlock">
-                    <option value="0">__请选择学习方向__</option>
-                    <option value="1">算法</option>
-                    <option value="2">项目-前端-BS</option>
-                    <option value="3">项目-前端-CS</option>
-                    <option value="4">项目-后端</option>
-                </select>
-
-            </div>
-            <br>
-            <span id="helpBlock" class="help-block text-center"></span>
-            <!--<div id="helpBlock" class="panel panel-default"></div>-->
-            <input type="button" class="btn btn-info center-block" value="提交" id="submitBtn">
-            <input type="hidden" name="token" value="add">
-        </form>
-    </div>
-</div>
-<script src="static/js/index.js"></script>
+<div id="app"></div>
 </body>
 </html>
