@@ -26,7 +26,8 @@
         msg: 'URL错误，请联系网站管理员',
         type: 'error',
         color: 'red darken-3',
-        dismissible: false
+        dismissible: false,
+        timer: null
       };
     },
     methods: {
@@ -35,7 +36,16 @@
         this.msg = msg;
         this.type = type;
         this.color = color;
-        this.dismissible = !(this.dismissible);
+        this.dismissible = true;
+
+        if (this.timer !== null) {
+          clearTimeout(this.timer);
+        }
+
+        this.timer = setTimeout(() => {
+          this.dismissible = false;
+          this.timer = null;
+        }, 3000);
       }
     }
   }

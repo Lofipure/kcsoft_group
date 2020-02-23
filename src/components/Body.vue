@@ -43,6 +43,7 @@
               label="学院"
               required
               @change="getMajorInfo"
+              @focus="getCollegeInfo"
             ></v-select>
           </v-col>
           <v-col cols="6">
@@ -52,6 +53,7 @@
               :rules="[v => !!v || '当然，专业也是']"
               label="专业"
               required
+              @focus="clickMajorInfo"
             ></v-select>
           </v-col>
         </v-row>
@@ -64,6 +66,7 @@
           label="分组"
           required
           @change="groupChange"
+          @focus="clickGroup"
         ></v-select>
       </div>
       <div class="description"></div>
@@ -98,6 +101,9 @@
   import axios from 'axios';
 
   import {alertConfig} from "@/components/Alert";
+  import {MarkDownIt} from "@/plugins/markdownit";
+
+  import qs from 'querystring';
 
   export default {
     name: "Body",
@@ -113,12 +119,14 @@
         nameRules: [
           v => !!v || '不能没有名字哦',
           v => (v && v.length <= 5) || '你的名字没有这么长吧',
+          v => (v && /^[\u4E00-\u9FA5]{1,5}$/.test(v))|| '你的名字有英文？'
         ],
 
         studentId: '',
         studentIdRules: [
           v => !!v || '竟然不想填学号？',
           v => (v && v.length === 11) || '学号有这么长吗？',
+          v => (v && /^1940[7|8][0-9]{6}/.test(v)) || '你真的是19级的吗？',
         ],
 
         college: '',
@@ -144,8 +152,37 @@
       gotoKCSOFTMainPage() {
         window.open('https://www.xust-kcsoft.club', '__blank');
       },
+      getCollegeInfo() {
+        if (this.collegeItems.length !== 0) return;
+        axios.get('http://group.xust-kcsoft.club/src/collegeAndMajor.php', {
+          params: {
+            type: 'college'
+          }
+        }).then(value => {
+          if (value.data.length === 0) {
+            console.error(value);
+            this.$emit('setalert', 'URL错误，请联系网站管理员', ...(alertConfig.error));
+          } else {
+            // console.log(value);
+            this.collegeItems = [];
+            value.data.forEach(value => {
+              this.collegeItems.push(value.college_name);
+              this.collegeDictionary[value.college_name] = value.college_code;
+            });
+          }
+        }, reason => {
+          console.error(reason);
+          this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
+        });
+      },
+      clickMajorInfo() {
+        if (this.majorItems.length === 0) {
+          this.getMajorInfo();
+        }
+      },
       getMajorInfo() {
         const collegeCode = this.collegeDictionary[this.college];
+        if (typeof collegeCode === 'undefined') return;
         axios.get('http://group.xust-kcsoft.club/src/collegeAndMajor.php', {
           params: {
             type: 'major',
@@ -185,14 +222,67 @@
           this.submitInfo.normal = `我选择${this.group}${this.group === '算法' ? '组' : ''}！`;
         }
       },
+      clickGroup() {
+        if (this.groupItems.length !== 0) return;
+        axios.get('http://group.xust-kcsoft.club/src/collegeAndMajor.php', {
+          params: {
+            type: 'group'
+          }
+        }).then(value => {
+          this.groupItems = [];
+          value.data.forEach(value => {
+            this.groupItems.push(value.name);
+            this.groupDictionary[value.name] = {
+              'id': value.id,
+              description: value.description
+            };
+          });
+        }, reason => {
+          console.error(reason);
+          this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
+        });
+      },
       submit() {
-        console.log([
-          this.name,
-          this.studentId,
-          this.collegeDictionary[this.college],
-          this.majorDictionary[this.major],
-          this.groupDictionary[this.group].id
-        ]);
+        // console.log([
+        //   this.name,
+        //   this.studentId,
+        //   this.collegeDictionary[this.college],
+        //   this.majorDictionary[this.major],
+        //   this.groupDictionary[this.group].id
+        // ]);
+        this.$emit('setmask', '先了解一下' + this.group + '吧！', MarkDownIt.render(this.groupDictionary[this.group].description));
+      },
+      ensureSubmit() {
+        this.$emit('setoverlay', true);
+
+        axios.post('http://group.xust-kcsoft.club/src/register.php', qs.stringify({
+          name: this.name,
+          student_id: this.studentId,
+          college_number: this.collegeDictionary[this.college],
+          major_number: this.majorDictionary[this.major],
+          group_selection: this.groupDictionary[this.group].id
+        }), {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }).then(value => {
+          console.log(value);
+          this.$emit('setoverlay', false);
+          if (value.data + '' === '1') {
+            this.$emit('setalert', '报名' + this.group + '成功！', ...(alertConfig.success));
+          } else {
+            this.$emit('setalert', '你已经提交过了！', ...(alertConfig.warning));
+          }
+
+          // 清空所有已填写事项
+          this.$refs.form.reset();
+          this.name = '';
+          this.studentId = '';
+        }, reason => {
+          console.error(reason);
+          this.$emit('setoverlay', false);
+          this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
+        });
       },
       reset() {
         this.$refs.form.reset();
@@ -201,43 +291,9 @@
       }
     },
     beforeMount() {
-      axios.get('http://group.xust-kcsoft.club/src/collegeAndMajor.php', {
-        params: {
-          type: 'college'
-        }
-      }).then(value => {
-        if (value.data.length === 0) {
-          console.error(value);
-          this.$emit('setalert', 'URL错误，请联系网站管理员', ...(alertConfig.error));
-        } else {
-          // console.log(value);
-          this.collegeItems = [];
-          value.data.forEach(value => {
-            this.collegeItems.push(value.college_name);
-            this.collegeDictionary[value.college_name] = value.college_code;
-          });
-        }
-      }, reason => {
-        console.error(reason);
-        this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
-      });
-      axios.get('http://group.xust-kcsoft.club/src/collegeAndMajor.php', {
-        params: {
-          type: 'group'
-        }
-      }).then(value => {
-        this.groupItems = [];
-        value.data.forEach(value => {
-          this.groupItems.push(value.name);
-          this.groupDictionary[value.name] = {
-            'id': value.id,
-            description: value.description
-          };
-        });
-      }, reason => {
-        console.error(reason);
-        this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
-      });
+      this.getCollegeInfo();
+
+      this.clickGroup();
     }
   }
 </script>
