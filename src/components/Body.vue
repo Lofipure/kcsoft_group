@@ -5,6 +5,7 @@
       ref="form"
       v-model="valid"
       :lazy-validation="lazy"
+      @input="formChange"
     >
       <div class="logo-header">
         <div class="logo" @click="gotoKCSOFTMainPage">
@@ -38,8 +39,8 @@
             <v-select
               v-model="college"
               :items="collegeItems"
-              :rules="[v => !!v || 'Item is required']"
-              label="College"
+              :rules="[v => !!v || '学院是必须的']"
+              label="学院"
               required
               @change="getMajorInfo"
             ></v-select>
@@ -48,34 +49,22 @@
             <v-select
               v-model="major"
               :items="majorItems"
-              :rules="[v => !!v || 'Item is required']"
-              label="Major"
+              :rules="[v => !!v || '当然，专业也是']"
+              label="专业"
               required
             ></v-select>
           </v-col>
         </v-row>
       </div>
-      <div class="iphone5-b-div">
-        <v-row justify="space-around">
-          <v-col cols="6">
-            <v-select
-              v-model="college"
-              :items="collegeItems"
-              :rules="[v => !!v || 'Item is required']"
-              label="Main"
-              required
-            ></v-select>
-          </v-col>
-          <v-col cols="6">
-            <v-select
-              v-model="major"
-              :items="majorItems"
-              :rules="[v => !!v || 'Item is required']"
-              label="Sub"
-              required
-            ></v-select>
-          </v-col>
-        </v-row>
+      <div class="iphone5-b-div input-row">
+        <v-select
+          v-model="group"
+          :items="groupItems"
+          :rules="[v => !!v || '？这个得填']"
+          label="分组"
+          required
+          @change="groupChange"
+        ></v-select>
       </div>
       <div class="description"></div>
       <div class="iphone5-div">
@@ -83,15 +72,17 @@
           <v-col class="iphone5-v-col">
             <v-btn
               color="success"
-              @click=""
+              @click="submit"
+              :disabled="submitDisabled"
+              v-cloak
             >
-              我选择xx组！
+              {{ submitInfo.normal }}
             </v-btn>
           </v-col>
           <v-col class="iphone5-v-col">
             <v-btn
               color="primary"
-              @click=""
+              @click="reset"
             >
               Reset
             </v-btn>
@@ -137,6 +128,16 @@
         major: '',
         majorItems: [],
         majorDictionary: {},
+
+        group: '',
+        groupItems: [],
+        groupDictionary: {},
+
+        submitInfo: {
+          'cannot': '信息没写完哦',
+          'normal': '信息没写完哦'
+        },
+        submitDisabled: true
       };
     },
     methods: {
@@ -165,9 +166,41 @@
           console.error(reason);
           this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
         });
+      },
+      formChange() {
+        if ((this.name.length > 0 && this.name.length <= 5)
+          && (this.studentId.length === 11)
+          && (this.college !== '' && this.major !== '' && this.group !== '')
+        ) {
+          this.submitDisabled = false;
+          this.submitInfo.normal = `我选择${this.group}${this.group === '算法' ? '组' : ''}！`;
+        } else {
+          this.submitDisabled = true;
+          this.submitInfo.normal = this.submitInfo.cannot;
+        }
+      },
+      groupChange() {
+        if (!(this.submitDisabled)) {
+          // 如果现在可以改变 submit 样式
+          this.submitInfo.normal = `我选择${this.group}${this.group === '算法' ? '组' : ''}！`;
+        }
+      },
+      submit() {
+        console.log([
+          this.name,
+          this.studentId,
+          this.collegeDictionary[this.college],
+          this.majorDictionary[this.major],
+          this.groupDictionary[this.group].id
+        ]);
+      },
+      reset() {
+        this.$refs.form.reset();
+        this.name = '';
+        this.studentId = '';
       }
     },
-    mounted() {
+    beforeMount() {
       axios.get('http://group.xust-kcsoft.club/src/collegeAndMajor.php', {
         params: {
           type: 'college'
@@ -188,7 +221,24 @@
         console.error(reason);
         this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
       });
-    },
+      axios.get('http://group.xust-kcsoft.club/src/collegeAndMajor.php', {
+        params: {
+          type: 'group'
+        }
+      }).then(value => {
+        this.groupItems = [];
+        value.data.forEach(value => {
+          this.groupItems.push(value.name);
+          this.groupDictionary[value.name] = {
+            'id': value.id,
+            description: value.description
+          };
+        });
+      }, reason => {
+        console.error(reason);
+        this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
+      });
+    }
   }
 </script>
 
