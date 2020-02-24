@@ -119,7 +119,7 @@
         nameRules: [
           v => !!v || '不能没有名字哦',
           v => (v && v.length <= 5) || '你的名字没有这么长吧',
-          v => (v && /^[\u4E00-\u9FA5]{1,5}$/.test(v))|| '你的名字有英文？'
+          v => (v && /^[\u4E00-\u9FA5]{1,5}$/.test(v)) || '你的名字有英文？'
         ],
 
         studentId: '',
@@ -145,7 +145,9 @@
           'cannot': '信息没写完哦',
           'normal': '信息没写完哦'
         },
-        submitDisabled: true
+        submitDisabled: true,
+
+        deadLine: false
       };
     },
     methods: {
@@ -172,7 +174,7 @@
           }
         }, reason => {
           console.error(reason);
-          this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
+          this.$emit('setalert', '请检查网络或关闭代理', ...(alertConfig.error));
         });
       },
       clickMajorInfo() {
@@ -201,7 +203,7 @@
           }
         }, reason => {
           console.error(reason);
-          this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
+          this.$emit('setalert', '请检查网络或关闭代理', ...(alertConfig.error));
         });
       },
       formChange() {
@@ -239,7 +241,7 @@
           });
         }, reason => {
           console.error(reason);
-          this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
+          this.$emit('setalert', '请检查网络或关闭代理', ...(alertConfig.error));
         });
       },
       submit() {
@@ -250,7 +252,11 @@
         //   this.majorDictionary[this.major],
         //   this.groupDictionary[this.group].id
         // ]);
-        this.$emit('setmask', '先了解一下' + this.group + '吧！', MarkDownIt.render(this.groupDictionary[this.group].description));
+        if (this.deadLine) {
+          this.$emit('setalert', '报名工作已结束！', ...(alertConfig.warning));
+        } else {
+          this.$emit('setmask', '先了解一下' + this.group + '吧！', MarkDownIt.render(this.groupDictionary[this.group].description));
+        }
       },
       ensureSubmit() {
         this.$emit('setoverlay', true);
@@ -281,18 +287,35 @@
         }, reason => {
           console.error(reason);
           this.$emit('setoverlay', false);
-          this.$emit('setalert', '网络错误，请稍后再试', ...(alertConfig.error));
+          this.$emit('setalert', '请检查网络或关闭代理', ...(alertConfig.error));
         });
       },
       reset() {
         this.$refs.form.reset();
         this.name = '';
         this.studentId = '';
+        this.college = '';
+        this.major = '';
+        this.group = '';
+      },
+      checkDeadLine() {
+        axios.get('http://group.xust-kcsoft.club/src/date.php')
+          .then(value => {
+            if (value.data + '' === '1') {
+              this.deadLine = false;
+            } else {
+              this.deadLine = true;
+              this.$emit('setalert', '报名工作已结束！', ...(alertConfig.warning));
+            }
+          }, reason => {
+            console.error(reason);
+            this.$emit('setalert', '请检查网络或关闭代理', ...(alertConfig.error));
+          });
       }
     },
-    beforeMount() {
+    mounted() {
+      this.checkDeadLine();
       this.getCollegeInfo();
-
       this.clickGroup();
     }
   }
