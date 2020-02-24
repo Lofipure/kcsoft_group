@@ -294,6 +294,9 @@
         this.$refs.form.reset();
         this.name = '';
         this.studentId = '';
+        this.college = '';
+        this.major = '';
+        this.group = '';
       },
       checkDeadLine() {
         axios.get('http://group.xust-kcsoft.club/src/date.php')
